@@ -27,6 +27,7 @@ namespace ZLP_Ryze
             Game.OnTick += Modes.AutoHarass;
             Game.OnTick += Modes.KillSteal;
             Game.OnTick += Modes.Stack;
+            Game.OnTick += More.StopAuto;
 
             Orbwalker.OnUnkillableMinion += Modes.LastHit;
             Gapcloser.OnGapcloser += Modes.OnGap;

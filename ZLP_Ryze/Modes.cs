@@ -76,6 +76,8 @@ namespace ZLP_Ryze
 
                 else
                 {
+                    if (!Spells.Q.IsLearned) return;
+
                     if (More.HitE != null && More.CountE == 0 &&
                         (!Menus.Clear["Qlc"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()))
                         Spells.E.Cast(More.HitE);

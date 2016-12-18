@@ -9,23 +9,28 @@ namespace ZLP_Ryze
 {
     public class More
     {
-        public static AIHeroClient TargetQ;
-        public static AIHeroClient TargetE;
+        public static AIHeroClient TargetQ, TargetE;
+        public static Obj_AI_Minion Minion, Monster;
+        public static Obj_AI_Base HitQ, HitE, HasE, DieE;
+        public static int CountE, CountM;
+        public static bool CollisionT, CollisionM, CollisionJ;
 
-        public static Obj_AI_Minion Minion;
-        public static Obj_AI_Minion Monster;
+        public static void StopAuto(EventArgs args)
+        {
+            TargetQ = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+            TargetE = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
 
-        public static Obj_AI_Base HitQ;
-        public static Obj_AI_Base HitE;
-        public static Obj_AI_Base HasE;
-        public static Obj_AI_Base DieE;
+            if ((Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) ||
+                 Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee)) &&
+                (Spells.W.IsReady() || Spells.E.IsReady()) &&
+                TargetQ != null && (TargetE == null || TargetE.Distance(Player.Instance) > 575))
+            {
+                Orbwalker.DisableAttacking = true;
+                return;
+            }
 
-        public static int CountE;
-        public static int CountM;
-
-        public static bool CollisionT;
-        public static bool CollisionM;
-        public static bool CollisionJ;
+            Orbwalker.DisableAttacking = false;
+        }
 
         public static void Combo()
         {
