@@ -21,6 +21,7 @@ namespace ZLP_Ryze
             TargetE = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
 
             if ((Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) ||
+                 Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) ||
                  Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee)) &&
                 (Spells.W.IsReady() || Spells.E.IsReady()) &&
                 TargetQ != null && (TargetE == null || TargetE.Distance(Player.Instance) > 575))
