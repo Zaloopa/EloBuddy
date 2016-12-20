@@ -140,18 +140,24 @@ namespace ZLP_Ryze
                 if (Spells.R.IsInRange(turret))
                 {
                     Spells.R.Cast(turret.Position);
+
                     if (!Spells.R.IsReady() && More.CanCast())
+                    {
                         Spells.Zhonya.Cast();
+                        Casted = false;
+                    }
                 }
 
                 else
                 {
                     Spells.R.Cast(Player.Instance.Position.Extend(turret, Spells.R.Range).To3DWorld());
-                    if (!Spells.R.IsReady() && More.CanCast())
-                        Spells.Zhonya.Cast();
-                }
 
-                Casted = false;
+                    if (!Spells.R.IsReady() && More.CanCast())
+                    {
+                        Spells.Zhonya.Cast();
+                        Casted = false;
+                    }
+                }
             }
         }
     }
