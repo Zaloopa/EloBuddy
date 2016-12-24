@@ -68,9 +68,9 @@ namespace ZLP_Malzahar
                 Draw.Add("draw", new CheckBox("Enable Drawings"));
                 Draw.AddSeparator();
                 Draw.Add("Q", new CheckBox("Draw Q"));
-                Draw.Add("W", new CheckBox("Draw W"));
+                Draw.Add("W", new CheckBox("Draw W", false));
                 Draw.Add("E", new CheckBox("Draw E"));
-                Draw.Add("R", new CheckBox("Draw R"));
+                Draw.Add("R", new CheckBox("Draw R", false));
                 Draw.Add("ignite", new CheckBox("Draw Ignite", false));
                 Draw.AddSeparator();
                 Draw.Add("damage", new CheckBox("Damage Indicator"));

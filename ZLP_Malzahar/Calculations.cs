@@ -6,7 +6,7 @@ namespace ZLP_Malzahar
 {
     public class Calculations
     {
-        public static float Damage;
+        public static float Damage, Edmg, Rdmg;
 
         public static void Execute()
         {
@@ -22,9 +22,11 @@ namespace ZLP_Malzahar
                         + 0.0875f * Player.Instance.TotalMagicalDamage) * 8f) : 0f;
                 var r = Spells.R.IsReady() ? Player.Instance.CalculateDamageOnUnit(enemy, DamageType.Magical,
                         new[] { 0f, 0.05f + 0.015f * ap, 0.07f + 0.015f * ap, 0.09f + 0.015f * ap }[Spells.R.Level]
-                        * enemy.MaxHealth) : 0f;
+                        * enemy.MaxHealth) * 3f : 0f;
 
                 Damage = q + e + r;
+                Edmg = e;
+                Rdmg = r;
 
                 if (Spells.Ignite != null && Spells.Ignite.IsReady())
                 {
