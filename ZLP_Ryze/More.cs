@@ -9,7 +9,7 @@ namespace ZLP_Ryze
 {
     public class More
     {
-        public static AIHeroClient TargetQ, TargetE;
+        public static AIHeroClient Target;
         public static Obj_AI_Minion Minion, Monster;
         public static Obj_AI_Base HitQ, HitE, HasE, DieE;
         public static int CountE, CountM;
@@ -17,14 +17,13 @@ namespace ZLP_Ryze
 
         public static void StopAuto(EventArgs args)
         {
-            TargetQ = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
-            TargetE = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
+            Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
 
-            if ((Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) ||
+            if (Target != null && Target.Distance(Player.Instance) > 575 &&
+                (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) ||
                  Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) ||
                  Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee)) &&
-                (Spells.W.IsReady() || Spells.E.IsReady()) &&
-                TargetQ != null && (TargetE == null || TargetE.Distance(Player.Instance) > 575))
+                (Spells.W.IsReady() || Spells.E.IsReady()))
             {
                 Orbwalker.DisableAttacking = true;
                 return;
@@ -35,30 +34,24 @@ namespace ZLP_Ryze
 
         public static void Combo()
         {
-            TargetQ = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
-            TargetE = TargetSelector.GetTarget(Spells.E.Range + 300, DamageType.Magical);
+            Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+            if (Target == null || !Spells.Q.IsReady()) return;
+            var prediction = Spells.Q.GetPrediction(Target);
+            CollisionT = prediction.CollisionObjects.Length > 0;
+            if (!CollisionT) return;
             CountE = EntityManager.Enemies.Count(e => e.HasBuff("RyzeE"));
+            HitQ = EntityManager.Enemies.Where(e => e.IsValidTarget(Spells.Q.Range) && e.HasBuff("RyzeE"))
+                                        .OrderBy(e => e.Distance(Player.Instance.Position)).FirstOrDefault();
 
-            if (TargetQ == null || !Spells.Q.IsReady())
-                CollisionT = false;
-
-            else
-            {
-                var prediction = Spells.Q.GetPrediction(TargetQ);
-                CollisionT = prediction.CollisionObjects.Length > 0;
-                HitQ = EntityManager.Enemies.Where(e => e.IsValidTarget(Spells.Q.Range) && e.HasBuff("RyzeE"))
-                                            .OrderBy(e => e.Distance(Player.Instance.Position)).FirstOrDefault();
-            }
-
-            if (TargetE != null)
+            if (Target.Distance(Player.Instance) <= Spells.E.Range + 300)
             {
                 HitE = EntityManager.Enemies.Where(e => e.IsValidTarget(Spells.E.Range))
-                                            .OrderBy(e => e.Distance(TargetE.Position)).FirstOrDefault();
+                                            .OrderBy(e => e.Distance(Target.Position)).FirstOrDefault();
                 HasE = EntityManager.Enemies.Where(e => e.IsValidTarget(Spells.E.Range) && e.HasBuff("RyzeE"))
-                                            .OrderBy(e => e.Distance(TargetE.Position)).FirstOrDefault();
+                                            .OrderBy(e => e.Distance(Target.Position)).FirstOrDefault();
                 DieE = EntityManager.Enemies
                        .Where(e => e.IsValidTarget(Spells.E.Range) && e.Health <= Spells.E.GetSpellDamage(e))
-                       .OrderBy(e => e.Distance(TargetE.Position)).FirstOrDefault();
+                       .OrderBy(e => e.Distance(Target.Position)).FirstOrDefault();
             }
         }
 
@@ -67,7 +60,7 @@ namespace ZLP_Ryze
             Minion = EntityManager.MinionsAndMonsters.EnemyMinions
                      .Where(m => m.IsValidTarget(Spells.Q.Range) && m.Health <= Spells.Q.GetSpellDamage(m))
                      .OrderBy(m => m.Distance(Player.Instance.Position)).FirstOrDefault();
-            TargetE = TargetSelector.GetTarget(Spells.E.Range + 300, DamageType.Magical);
+            Target = TargetSelector.GetTarget(Spells.E.Range + 300, DamageType.Magical);
             CountE = EntityManager.MinionsAndMonsters.EnemyMinions.Count(m => m.HasBuff("RyzeE"));
 
             if (Minion == null || !Spells.Q.IsReady())
@@ -79,7 +72,7 @@ namespace ZLP_Ryze
                 CollisionM = prediction.CollisionObjects.Length > 0;
             }
 
-            if (TargetE == null)
+            if (Target == null)
             {
                 HitE = EntityManager.MinionsAndMonsters.EnemyMinions
                        .Where(m => m.IsValidTarget(Spells.E.Range))
@@ -96,13 +89,13 @@ namespace ZLP_Ryze
             {
                 HitE = EntityManager.MinionsAndMonsters.EnemyMinions
                        .Where(m => m.IsValidTarget(Spells.E.Range))
-                       .OrderBy(m => m.Distance(TargetE.Position)).FirstOrDefault();
+                       .OrderBy(m => m.Distance(Target.Position)).FirstOrDefault();
                 HasE = EntityManager.MinionsAndMonsters.EnemyMinions
                        .Where(m => m.IsValidTarget(Spells.E.Range) && m.HasBuff("RyzeE"))
-                       .OrderBy(m => m.Distance(TargetE.Position)).FirstOrDefault();
+                       .OrderBy(m => m.Distance(Target.Position)).FirstOrDefault();
                 DieE = EntityManager.MinionsAndMonsters.EnemyMinions
                        .Where(m => m.IsValidTarget(Spells.E.Range) && m.Health <= Spells.E.GetSpellDamage(m))
-                       .OrderBy(m => m.Distance(TargetE.Position)).FirstOrDefault();
+                       .OrderBy(m => m.Distance(Target.Position)).FirstOrDefault();
             }
         }
 
