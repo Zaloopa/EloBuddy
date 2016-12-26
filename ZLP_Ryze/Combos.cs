@@ -12,7 +12,7 @@ namespace ZLP_Ryze
             if (More.Target == null || More.Unkillable(More.Target)) return;
 
             if (Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() &&
-                More.Target.IsValidTarget(Spells.Q.Range))
+                Spells.Q.IsInRange(More.Target))
             {
                 var prediction = Spells.Q.GetPrediction(More.Target);
                 if (prediction.HitChance >= More.Hit())
@@ -20,13 +20,13 @@ namespace ZLP_Ryze
             }
 
             if (Menus.Combo["Wc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady() &&
-                More.Target.IsValidTarget(Spells.W.Range) &&
+                Spells.W.IsInRange(More.Target) &&
                 (!Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()) &&
                 (!Menus.Combo["Ec"].Cast<CheckBox>().CurrentValue || !Spells.E.IsReady()))
                 Spells.W.Cast(More.Target);
 
             if (Menus.Combo["Ec"].Cast<CheckBox>().CurrentValue && Spells.E.IsReady() &&
-                More.Target.IsValidTarget(Spells.E.Range) &&
+                Spells.E.IsInRange(More.Target) &&
                 (!Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()))
                 Spells.E.Cast(More.Target);
         }
@@ -36,7 +36,7 @@ namespace ZLP_Ryze
             if (More.Target == null || More.Unkillable(More.Target)) return;
 
             if (Menus.Combo["Qh"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() &&
-                More.Target.IsValidTarget(Spells.Q.Range))
+                Spells.Q.IsInRange(More.Target))
             {
                 var prediction = Spells.Q.GetPrediction(More.Target);
                 if (prediction.HitChance >= More.Hit())
@@ -44,7 +44,7 @@ namespace ZLP_Ryze
             }
 
             if (Menus.Combo["Eh"].Cast<CheckBox>().CurrentValue && Spells.E.IsReady() &&
-                More.Target.IsValidTarget(Spells.E.Range) &&
+                Spells.E.IsInRange(More.Target) &&
                 (!Menus.Combo["Qh"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()))
                 Spells.E.Cast(More.Target);
         }
@@ -53,7 +53,7 @@ namespace ZLP_Ryze
         {
             if (More.Target == null) return;
 
-            if (Spells.Q.IsReady() && More.Target.IsValidTarget(Spells.Q.Range) &&
+            if (Spells.Q.IsReady() && Spells.Q.IsInRange(More.Target) &&
                 (Player.Instance.HasBuff("RyzeQIconNoCharge") || Player.Instance.HasBuff("RyzeQIconFullCharge")))
             {
                 var prediction = Spells.Q.GetPrediction(More.Target);
@@ -63,10 +63,10 @@ namespace ZLP_Ryze
                     Spells.Q.Cast(Player.Instance.Position.Extend(More.Target, Spells.Q.Range).To3DWorld());
             }
 
-            if (Spells.W.IsReady() && More.Target.IsValidTarget(Spells.W.Range) && More.Target.HasBuff("RyzeE"))
+            if (Spells.W.IsReady() && Spells.W.IsInRange(More.Target) && More.Target.HasBuff("RyzeE"))
                 Spells.W.Cast(More.Target);
 
-            if (Spells.E.IsReady() && More.Target.IsValidTarget(Spells.E.Range) &&
+            if (Spells.E.IsReady() && Spells.E.IsInRange(More.Target) &&
                 (!Spells.Q.IsReady() || More.CollisionT || More.Target.HasBuff("RyzeE")))
                 Spells.E.Cast(More.Target);
         }
