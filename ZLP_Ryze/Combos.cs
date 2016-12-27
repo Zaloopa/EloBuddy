@@ -9,66 +9,85 @@ namespace ZLP_Ryze
     {
         public static void Combo()
         {
-            if (More.Target == null || More.Unkillable(More.Target)) return;
-
-            if (Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() &&
-                Spells.Q.IsInRange(More.Target))
+            if (Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady())
             {
-                var prediction = Spells.Q.GetPrediction(More.Target);
-                if (prediction.HitChance >= More.Hit())
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+                if (target == null || More.Unkillable(target)) return;
+                var prediction = Spells.Q.GetPrediction(target);
+                if (target.IsValidTarget(Spells.Q.Range) && prediction.HitChance >= More.Hit())
                     Spells.Q.Cast(prediction.CastPosition);
             }
 
             if (Menus.Combo["Wc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady() &&
-                Spells.W.IsInRange(More.Target) &&
                 (!Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()) &&
                 (!Menus.Combo["Ec"].Cast<CheckBox>().CurrentValue || !Spells.E.IsReady()))
-                Spells.W.Cast(More.Target);
+            {
+                var target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
+                if (target == null || More.Unkillable(target)) return;
+                if (target.IsValidTarget(Spells.W.Range))
+                    Spells.W.Cast(target);
+            }
 
             if (Menus.Combo["Ec"].Cast<CheckBox>().CurrentValue && Spells.E.IsReady() &&
-                Spells.E.IsInRange(More.Target) &&
                 (!Menus.Combo["Qc"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()))
-                Spells.E.Cast(More.Target);
+            {
+                var target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
+                if (target == null || More.Unkillable(target)) return;
+                if (target.IsValidTarget(Spells.E.Range))
+                    Spells.E.Cast(target);
+            }
         }
 
         public static void Harass()
         {
-            if (More.Target == null || More.Unkillable(More.Target)) return;
-
-            if (Menus.Combo["Qh"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() &&
-                Spells.Q.IsInRange(More.Target))
+            if (Menus.Combo["Qh"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady())
             {
-                var prediction = Spells.Q.GetPrediction(More.Target);
-                if (prediction.HitChance >= More.Hit())
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+                if (target == null || More.Unkillable(target)) return;
+                var prediction = Spells.Q.GetPrediction(target);
+                if (target.IsValidTarget(Spells.Q.Range) && prediction.HitChance >= More.Hit())
                     Spells.Q.Cast(prediction.CastPosition);
             }
 
             if (Menus.Combo["Eh"].Cast<CheckBox>().CurrentValue && Spells.E.IsReady() &&
-                Spells.E.IsInRange(More.Target) &&
                 (!Menus.Combo["Qh"].Cast<CheckBox>().CurrentValue || !Spells.Q.IsReady()))
-                Spells.E.Cast(More.Target);
+            {
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+                if (target == null || More.Unkillable(target)) return;
+                if (target.IsValidTarget(Spells.E.Range))
+                    Spells.E.Cast(target);
+            }
         }
 
         public static void Flee()
         {
-            if (More.Target == null) return;
-
-            if (Spells.Q.IsReady() && Spells.Q.IsInRange(More.Target) &&
-                (Player.Instance.HasBuff("RyzeQIconNoCharge") || Player.Instance.HasBuff("RyzeQIconFullCharge")))
+            if (Spells.Q.IsReady() && (Player.Instance.HasBuff("RyzeQIconNoCharge") ||
+                                       Player.Instance.HasBuff("RyzeQIconFullCharge")))
             {
-                var prediction = Spells.Q.GetPrediction(More.Target);
-                if (prediction.HitChance >= More.Hit())
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+                if (target == null) return;
+                var prediction = Spells.Q.GetPrediction(target);
+                if (target.IsValidTarget(Spells.Q.Range) && prediction.HitChance >= More.Hit())
                     Spells.Q.Cast(prediction.CastPosition);
                 if (More.CollisionT && Player.Instance.HasBuff("RyzeQIconFullCharge"))
-                    Spells.Q.Cast(Player.Instance.Position.Extend(More.Target, Spells.Q.Range).To3DWorld());
+                    Spells.Q.Cast(Player.Instance.Position.Extend(target, Spells.Q.Range).To3DWorld());
             }
 
-            if (Spells.W.IsReady() && Spells.W.IsInRange(More.Target) && More.Target.HasBuff("RyzeE"))
-                Spells.W.Cast(More.Target);
+            if (Spells.W.IsReady())
+            {
+                var target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
+                if (target == null) return;
+                if (target.IsValidTarget(Spells.W.Range) && target.HasBuff("RyzeE"))
+                    Spells.W.Cast(target);
+            }
 
-            if (Spells.E.IsReady() && Spells.E.IsInRange(More.Target) &&
-                (!Spells.Q.IsReady() || More.CollisionT || More.Target.HasBuff("RyzeE")))
-                Spells.E.Cast(More.Target);
+            if (Spells.E.IsReady())
+            {
+                var target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
+                if (target == null) return;
+                if (target.IsValidTarget(Spells.E.Range) && (!Spells.Q.IsReady() || More.CollisionT || target.HasBuff("RyzeE")))
+                    Spells.E.Cast(target);
+            }
         }
 
         public static void Collision()
@@ -85,22 +104,22 @@ namespace ZLP_Ryze
             {
                 if (More.DieE != null)
                 {
-                    var target = TargetSelector.GetTarget(300, DamageType.Magical, More.DieE.Position, true);
-                    if (target != null)
+                    var targetE = TargetSelector.GetTarget(300, DamageType.Magical, More.DieE.Position, true);
+                    if (targetE != null)
                         Spells.E.Cast(More.DieE);
                 }
 
                 if (More.HasE != null)
                 {
-                    var target = TargetSelector.GetTarget(300, DamageType.Magical, More.HasE.Position, true);
-                    if (target != null)
+                    var targetE = TargetSelector.GetTarget(300, DamageType.Magical, More.HasE.Position, true);
+                    if (targetE != null)
                         Spells.E.Cast(More.HasE);
                 }
 
                 if (More.HitE != null && More.HasE == null && More.DieE == null)
                 {
-                    var target = TargetSelector.GetTarget(300, DamageType.Magical, More.HitE.Position, true);
-                    if (target != null)
+                    var targetE = TargetSelector.GetTarget(300, DamageType.Magical, More.HitE.Position, true);
+                    if (targetE != null)
                         Spells.E.Cast(More.HitE);
                 }
             }
