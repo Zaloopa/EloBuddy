@@ -10,10 +10,11 @@ namespace ZLP_Ryze
     public class More
     {
         public static AIHeroClient TargetQ, TargetE;
-        public static Obj_AI_Minion Minion, Monster;
         public static Obj_AI_Base HitQ, HitE, HasE, DieE;
-        public static int CountE, CountM;
+        public static Obj_AI_Minion Minion, Monster;
         public static bool CollisionT, CollisionM, CollisionJ, StopQ;
+        public static int CountE, CountM;
+        public static float LastCast;
 
         public static void StopAuto(EventArgs args)
         {
@@ -145,21 +146,20 @@ namespace ZLP_Ryze
             return target.IsInvulnerable;
         }
 
-        /*public static float LastCast;
-
         public static bool CanCast()
         {
             var delay = new Random().Next(Menus.MinDelay.CurrentValue, Menus.MaxDelay.CurrentValue);
             return !Menus.Main["human"].Cast<CheckBox>().CurrentValue || 
                    LastCast * 1000 + delay <= Game.Time * 1000;
-        }*/
+        }
 
         public static void OnCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            /*if (!sender.IsMe || args.Slot == SpellSlot.Recall) return;
-            LastCast = Game.Time;*/
+            if (!sender.IsMe || args.Slot == SpellSlot.Recall) return;
 
-            if (sender.IsMe && args.Slot == SpellSlot.E && args.Target is Obj_AI_Minion)
+            LastCast = Game.Time;
+
+            if (args.Slot == SpellSlot.E && args.Target is Obj_AI_Minion)
             {
                 var minion = args.Target as Obj_AI_Minion;
                 StopQ = minion.Health <= Spells.E.GetSpellDamage(minion);

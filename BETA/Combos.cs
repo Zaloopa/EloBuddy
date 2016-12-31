@@ -69,8 +69,8 @@ namespace ZLP_Ryze
                 var prediction = Spells.Q.GetPrediction(target);
                 if (target.IsValidTarget(Spells.Q.Range) && prediction.HitChance >= More.Hit())
                     Spells.Q.Cast(prediction.CastPosition);
-                if (More.CollisionT && Player.Instance.HasBuff("RyzeQIconFullCharge"))
-                    Spells.Q.Cast(Player.Instance.Position.Extend(target, Spells.Q.Range).To3DWorld());
+                /*if (More.CollisionT && Player.Instance.HasBuff("RyzeQIconFullCharge"))
+                    Spells.Q.Cast(Player.Instance.Position.Extend(target, Spells.Q.Range).To3DWorld());*/
             }
 
             if (Spells.W.IsReady())
@@ -141,7 +141,7 @@ namespace ZLP_Ryze
                 {
                     Spells.R.Cast(turret.Position);
 
-                    if (!Spells.R.IsReady()/* && More.CanCast()*/)
+                    if (!Spells.R.IsReady() && More.CanCast())
                     {
                         Spells.Zhonya.Cast();
                         Casted = false;
@@ -152,7 +152,7 @@ namespace ZLP_Ryze
                 {
                     Spells.R.Cast(Player.Instance.Position.Extend(turret, Spells.R.Range).To3DWorld());
 
-                    if (!Spells.R.IsReady()/* && More.CanCast()*/)
+                    if (!Spells.R.IsReady() && More.CanCast())
                     {
                         Spells.Zhonya.Cast();
                         Casted = false;

@@ -13,7 +13,8 @@ namespace ZLP_Ryze
 
         public static void Initialize()
         {
-            Q = new Spell.Skillshot(SpellSlot.Q, 1000, SkillShotType.Linear, 250, 1700, 60);
+            Q = new Spell.Skillshot(SpellSlot.Q, 1000, SkillShotType.Linear, 250, 1700, 60)
+            { AllowedCollisionCount = 0 };
             W = new Spell.Targeted(SpellSlot.W, 615);
             E = new Spell.Targeted(SpellSlot.E, 615);
             R = new Spell.Skillshot(SpellSlot.R, 1750, SkillShotType.Circular, 2250, int.MaxValue, 475);

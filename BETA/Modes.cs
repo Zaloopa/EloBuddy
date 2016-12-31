@@ -11,35 +11,35 @@ namespace ZLP_Ryze
     {
         public static void Combo()
         {
-            //if (!More.CanCast()) return;
-            More.Combo();
+            if (!More.CanCast()) return;
+            //More.Combo();
 
             if (Player.Instance.HealthPercent <= Menus.ComboHealth.CurrentValue && Menus.ComboHealth.CurrentValue != 0)
                 Combos.Flee();
 
-            else
-            {
+            else Combos.Combo();
+            /*{
                 if (!More.CollisionT)
                     Combos.Combo();
                 else
                     Combos.Collision();
-            }
+            }*/
         }
 
         public static void Harass()
         {
-            if (Player.Instance.ManaPercent <= Menus.HarassMana.CurrentValue/* || !More.CanCast()*/) return;
-            More.Combo();
-
-            if (!More.CollisionT)
+            if (Player.Instance.ManaPercent <= Menus.HarassMana.CurrentValue || !More.CanCast()) return;
+            //More.Combo();
+            Combos.Harass();
+            /*if (!More.CollisionT)
                 Combos.Harass();
             else
-                Combos.Collision();
+                Combos.Collision();*/
         }
 
         public static void LaneClear()
         {
-            if (Player.Instance.ManaPercent <= Menus.LaneMana.CurrentValue/* || !More.CanCast()*/) return;
+            if (Player.Instance.ManaPercent <= Menus.LaneMana.CurrentValue || !More.CanCast()) return;
             More.Lane();
 
             if (Menus.Clear["Qlc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() && !More.StopQ)
@@ -93,7 +93,7 @@ namespace ZLP_Ryze
 
         public static void JungleClear()
         {
-            if (Player.Instance.ManaPercent <= Menus.JungleMana.CurrentValue/* || !More.CanCast()*/) return;
+            if (Player.Instance.ManaPercent <= Menus.JungleMana.CurrentValue || !More.CanCast()) return;
             More.Jungle();
 
             if (Menus.Clear["Qjc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() && !More.StopQ)
@@ -216,8 +216,8 @@ namespace ZLP_Ryze
 
         public static void Flee()
         {
-            //if (!More.CanCast()) return;
-            More.Combo();
+            if (!More.CanCast()) return;
+            //More.Combo();
 
             Combos.Flee();
         }
@@ -234,7 +234,7 @@ namespace ZLP_Ryze
         public static void AutoHarass(EventArgs args)
         {
             if (Menus.Combo["auto"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady() &&
-                Player.Instance.ManaPercent > Menus.HarassMana.CurrentValue/* && More.CanCast()*/)
+                Player.Instance.ManaPercent > Menus.HarassMana.CurrentValue && More.CanCast())
             {
                 var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (target == null || More.Unkillable(target)) return;
@@ -288,7 +288,7 @@ namespace ZLP_Ryze
         public static void Stack(EventArgs args)
         {
             if (!Menus.Misc["stack"].Cast<CheckBox>().CurrentValue || Spells.Seraph.IsOwned() ||
-                Player.Instance.IsRecalling()/* || !More.CanCast()*/) return;
+                Player.Instance.IsRecalling() || !More.CanCast()) return;
 
             var count = EntityManager.MinionsAndMonsters.Monsters.Count(m => m.IsInRange(Player.Instance, 1000));
             if ((Spells.Tear.IsOwned() || Spells.Archangel.IsOwned()) &&
@@ -300,7 +300,7 @@ namespace ZLP_Ryze
 
         public static void OnGap(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            if (Menus.Misc["gap"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()/* && More.CanCast() */&&
+            if (Menus.Misc["gap"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady() &&
                 sender != null && sender.IsEnemy && e.End.Distance(Player.Instance) <= Spells.W.Range)
                 Spells.W.Cast(sender);
         }
